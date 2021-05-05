@@ -1,7 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as stc
 from db import * 
-from InvestAmount import *
+from portfolio import *
 from profitMeasure import *
 from PIL import Image
 
