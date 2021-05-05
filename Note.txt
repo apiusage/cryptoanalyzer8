@@ -43,11 +43,3 @@ git config credential.helper store
 git push http://example.com/repo.git
 Username: <type your username>
 Password: <type your password>
-
-
-pip install --upgrade cython
-pip install convertdate
-pip install LunarCalendar
-pip install holidays
-pip install pystan
-pip3 install fbprophet

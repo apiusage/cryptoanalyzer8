@@ -11,7 +11,7 @@ def run_profitMeasure():
     percentage = (1-quotient) * 100
     profit = (percentage/100) * capital
     st.info("__Lowest:__" + " "  + str(value[0]) + "     " + "__Highest:__" + " " + str(value[1]))
-    fees = profit * 0.1000
+    fees = profit * 0.001
     totalprofit = profit - fees
 
     st.write("__Percentage__: " + str("{:.2f}".format(percentage)) + "%")
