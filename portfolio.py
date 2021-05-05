@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.express as px
 import datetime
 
-def run_investAmount():
+def run_portfolio():
     try:
         coinListDF = pd.read_excel('data/Coin List.xlsx', engine='openpyxl')  
         coinListDF = coinListDF['Coins List'].values.tolist()

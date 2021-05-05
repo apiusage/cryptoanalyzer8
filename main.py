@@ -18,7 +18,7 @@ LOGO_BANNER = """
 def main():
     stc.html(LOGO_BANNER)
 
-    menu = ["Home", "Profit Measurement", "Invest Amount", "About"]
+    menu = ["Home", "Profit Measurement", "Portfolio", "About"]
     choice = st.sidebar.selectbox("Menu", menu)
 
     create_table()
@@ -26,8 +26,8 @@ def main():
     if choice == "Profit Measurement":
         run_profitMeasure()
 
-    elif choice == "Invest Amount":   
-        run_investAmount() 
+    elif choice == "Portfolio":   
+        run_portfolio() 
 
     elif choice == "About":
         st.header("About")
