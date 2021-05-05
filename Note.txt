@@ -1,0 +1,53 @@
+cd C:\Users\bston\Desktop\Crypto_Analyzer
+
+streamlit run main.py
+streamlit run main.py --logger.level=debug
+
+=======================================================
+View all DB
+sqlite3 data.db
+.table
+SELECT * from startupIdea;
+
+=======================================================
+1. Create requirements.txt file
+pip install pipreqs
+pipreqs --encoding=utf8 C:\Users\bston\Desktop\Crypto_Analyzer --force
+
+2. Push to Github
+git init
+git add .
+git status
+git commit -m "Updates"
+git remote add origin https://github.com/apiusage/Crypto_Analyzer.git
+git push -u origin master
+
+https://share.streamlit.io/
+
+3. https://share.streamlit.io/
+https://www.youtube.com/watch?v=sO4IKex53JY
+
+4. Create README.md
+git add README.md main.py
+git commit -m "Updates"
+git push origin master
+
+=======================================================
+Install tags
+pip install --upgrade streamlit_tags
+pip install --extra-index-url https://pypi.fury.io/arrow-nightlies/ --pre pyarrow
+
+=======================================================
+Store your credentials
+git config credential.helper store
+git push http://example.com/repo.git
+Username: <type your username>
+Password: <type your password>
+
+
+pip install --upgrade cython
+pip install convertdate
+pip install LunarCalendar
+pip install holidays
+pip install pystan
+pip3 install fbprophet
