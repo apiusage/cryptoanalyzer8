@@ -5,12 +5,17 @@ def run_profitMeasure():
     st.header("Measure Profit")
 
     capital = st.number_input("Capital: ", 0, value=0, key=0)
-    value = st.slider('Coin Price Changes: ', 1.0, 1.5, (1.1, 1.3))
-    
-    quotient = value[0] / value[1] 
+
+    c1, c2 = st.beta_columns([1, 1])
+    with c1:
+        fPrice = st.number_input("1st Price: ", 0.0, value=0.0, key=1)
+    with c2:
+        sPrice = st.number_input("2nd Price: ", 0.0, value=0.0, key=2)
+
+    quotient = fPrice / sPrice
     percentage = (1-quotient) * 100
     profit = (percentage/100) * capital
-    st.info("__Lowest:__" + " "  + str(value[0]) + "     " + "__Highest:__" + " " + str(value[1]))
+    st.info("__Lowest:__" + " "  + str(fPrice) + "     " + "__Highest:__" + " " + str(sPrice))
     fees = profit * 0.001
     totalprofit = profit - fees
 
