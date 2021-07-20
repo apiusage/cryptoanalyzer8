@@ -26,16 +26,13 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 def main():
     try:
         stc.html(LOGO_BANNER)
-        menu = ["Home", "Margin Level", "Profit Measurement", "Portfolio", "About"]
+        menu = ["Home", "Margin Level", "Portfolio", "About"]
         choice = st.sidebar.selectbox("Menu", menu)
 
         create_table()
 
         if choice == "Margin Level":
             run_marginLevel()
-
-        elif choice == "Profit Measurement":
-            run_profitMeasure()
 
         elif choice == "Portfolio":   
             run_portfolio() 
@@ -46,23 +43,25 @@ def main():
             st.balloons()
 
         st.header("Measure Profit")
-        capital = st.number_input("Capital: ", 0, value=0, key=0)
+        capital = st.number_input("Capital: ", 0.0, value=0.0, key=0)
         fPrice = st.number_input("Buy Price: ", 0.0, value=0.0, key=1)
         sPrice = st.number_input("Target Price: ", 0.0, value=0.0, key=2)
 
         c1, c2 = st.beta_columns([1, 1])
+        SLPercent = [1.5, 2]
         with c1:
             st.success("Stop loss (Short)")
-            SLPercent = [1.5, 2]
             for x in SLPercent:
+                value = x / 100 * capital
                 SLPrice = fPrice * x / 100
-                st.write(str(x) + "% = $" + str("{:.2f}".format(fPrice + SLPrice)))
+                st.write(str(x) + "% = $" + str("{:.3f}".format(fPrice + SLPrice)) + " (Risk: $" + str("{:.2f}".format(value)) + ")")
 
         with c2:
             st.success("Stop loss (Long)")
             for x in SLPercent:
+                value = x / 100 * capital
                 SLPrice = fPrice * x / 100
-                st.write(str(x) + "% = $" + str("{:.2f}".format(fPrice - SLPrice)))
+                st.write(str(x) + "% = $" + str("{:.3f}".format(fPrice - SLPrice)) + " (Risk: $" + str("{:.2f}".format(value)) + ")")
 
         quotient = fPrice / sPrice
         percentage = (1 - quotient) * 100
