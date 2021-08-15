@@ -25,7 +25,7 @@ hide_streamlit_style = """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 def main():
-    try:
+    # try:
         stc.html(LOGO_BANNER)
         menu = ["Home", "Potential Coin", "Margin Level", "Portfolio", "About"]
         choice = st.sidebar.selectbox("Menu", menu)
@@ -81,8 +81,8 @@ def main():
             st.write("__Less Fees (0.1%)__: $" + str("{:.2f}".format(fees)))
             st.write("__Total Profit__: $" + str("{:.2f}".format(totalprofit)))
 
-    except:
-           pass
+    #except:
+    #       pass
 
 if __name__ == '__main__':
     main()

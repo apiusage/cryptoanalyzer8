@@ -7,14 +7,13 @@ import pytz
 import tzlocal
 import datetime
 from datetime import date
+from datetime import timedelta
 
 def run_potentialCoin():
     st.header("Potential Coin")
-
     intervals = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M']
     columns = ["Open time", "Open", "High", "Low", "Close", "Volume", "Close time", "Quote asset volume",
                "Number of trades", "Taker buy base asset volume", "Taker buy quote asset volume", "Ignore"]
-    week_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
     marketpairsList = []
     dataMarketPairs = GetMarketPairs()
@@ -27,8 +26,8 @@ def run_potentialCoin():
     min_date = today
     max_date = today
     startEndDate = st.date_input("Pick a date", (min_date, max_date))
-    sDate = startEndDate[0].strftime("%d/%m/%Y, %H:%M:%S")
-    eDate = startEndDate[1].strftime("%d/%m/%Y, %H:%M:%S")
+    sDate = startEndDate[0].strftime("%Y/%m/%d, %H:%M:%S")
+    eDate = (startEndDate[1] + timedelta(days=1)).strftime("%Y/%m/%d, %H:%M:%S")
 
     col1, col2 = st.beta_columns(2)
 
@@ -36,14 +35,13 @@ def run_potentialCoin():
         ResultsAll = pd.DataFrame()
         dataJson = GetResultsJson(coinOption, intervalOption)
         for i in range(0, len(dataJson)):
-            dateString = pd.to_datetime(dataJson[i][0], unit='ms')
+            current_utc_time = pd.to_datetime(dataJson[i][0], unit='ms')
 
             # UTC time to local time
-            current_utc_time = dateString
             local_timezone = tzlocal.get_localzone()
             date_time = current_utc_time.replace(tzinfo=pytz.utc).astimezone(local_timezone)
             dayofweek = dow(date_time)
-            date_time = date_time.strftime("%d/%m/%Y, %H:%M:%S")
+            date_time = date_time.strftime("%Y/%m/%d, %H:%M:%S")
 
             close = "{:.4f}".format(float(dataJson[i][4]))
             volume = "{:.2f}".format(float(dataJson[i][5]))
@@ -62,7 +60,7 @@ def run_potentialCoin():
         # st.line_chart(lineChartDF.head(15), use_container_width=True)
         ResultsAll.set_index('Open time', inplace=True)
 
-        dateFilteredDT = ResultsAll.loc[sDate:eDate]
+        dateFilteredDT = ResultsAll[(ResultsAll.index.get_level_values(0) >= sDate) & (ResultsAll.index.get_level_values(0) <= eDate)]
         with col1:
             st.dataframe(ResultsAll)
             st.info("Highest Price")
