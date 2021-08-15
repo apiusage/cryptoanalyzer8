@@ -39,7 +39,7 @@ def run_potentialCoin():
 
             # UTC time to local time
             local_timezone = tzlocal.get_localzone()
-            date_time = current_utc_time.replace(tzinfo=pytz.utc).astimezone(local_timezone)
+            date_time = current_utc_time.replace(tzinfo=pytz.utc).astimezone('Asia/Singapore')
             dayofweek = dow(date_time)
             date_time = date_time.strftime("%Y/%m/%d, %H:%M:%S")
 
