@@ -20,7 +20,7 @@ git add .
 git status
 git commit -m "Updates"
 git remote add origin https://github.com/apiusage/Crypto_Analyzer.git
-git remote set-url origin https://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@github.com/apiusage/Crypto_Analyzer.git
+git remote set-url origin https://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@github.com/apiusage/Crypto_Analyzer.git
 git push -u origin master
 
 https://share.streamlit.io/
@@ -33,9 +33,34 @@ git add README.md main.py
 git commit -m "Updates"
 git push origin master
 
+Line chart
+https://plotly.com/python/reference/layout/yaxis/
+https://discuss.streamlit.io/t/how-to-build-line-chart-with-two-values-on-y-axis-and-sorded-x-axis-acording-string/9490/2
+https://altair-viz.github.io/
 =======================================================
 Store your credentials
 git config credential.helper store
 git push http://example.com/repo.git
 Username: <type your username>
 Password: <type your password>
+
+
+Get milliseconds
+    currentDay = datetime.now().day
+    currentMonth = datetime.now().month
+    currentYear = datetime.now().year
+
+    today = datetime(currentYear, currentMonth, currentDay)
+    todayMS = timestamp(today)
+
+    yesterday = datetime(currentYear, currentMonth, currentDay-1)
+    yesterdayMS = timestamp(yesterday)
+
+    st.write(int(todayMS))
+    st.write(int(yesterdayMS))
+
+    def timestamp(dt):
+	return dt.replace(tzinfo=pytz.utc).timestamp() * 1000
+
+How To Make Your Pandas Loop 71803 Times Faster
+https://towardsdatascience.com/how-to-make-your-pandas-loop-71-803-times-faster-805030df4f06
