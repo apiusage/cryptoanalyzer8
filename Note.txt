@@ -21,7 +21,7 @@ git add .
 git status
 git commit -m "Updates"
 git remote add origin https://github.com/apiusage/Crypto_Analyzer.git
-git remote set-url origin https://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@github.com/apiusage/Crypto_Analyzer.git
+git remote set-url origin https://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@github.com/apiusage/Crypto_Analyzer.git
 git push -u origin master
 
 https://share.streamlit.io/
