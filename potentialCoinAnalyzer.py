@@ -1,5 +1,6 @@
 import streamlit as st
 from db import *
+import streamlit
 import pandas as pd
 import requests
 import json
@@ -7,6 +8,8 @@ import pytz
 from datetime import date, timedelta
 import plotly.express as px
 import altair as alt
+from millify import millify
+from streamlit_metrics import metric, metric_row
 
 def run_potentialCoin():
     st.header("Potential Coin")
@@ -19,8 +22,8 @@ def run_potentialCoin():
     for i in range(0, len(dataMarketPairs['symbols'])):
         marketpairsList.append(dataMarketPairs['symbols'][i]['symbol'])
 
-    coinOption = st.multiselect("Select a coin", marketpairsList, default="MATICUSDT")
-    intervalOption = st.select_slider('Select a interval', options=intervals, value ='1h')
+    coinOption = st.multiselect("Select a coin", marketpairsList)
+    intervalOption = st.select_slider('Select a interval', options=intervals, value='15m')
 
     today = date.today()
     min_date = today
@@ -66,6 +69,7 @@ def run_potentialCoin():
         LowDF = filterDFDate(LowDF, sDate, eDate)
         weekNumber = date.today().isocalendar()[1]
 
+        changes24Hours(coinOption[0])
         closeDF = closeDF[(closeDF['Open time'] >= sDate) & (closeDF['Open time'] <= eDate)]
         closeDF['Open time'] = "(" + pd.to_datetime(closeDF['Open time']).dt.strftime("%a") + ") " + closeDF['Open time']
         fig = px.line(closeDF, x="Open time", y="Close")
@@ -84,7 +88,7 @@ def run_potentialCoin():
 
         with col1:
             st.dataframe(HighDF)
-            st.info("Highest price of each week" + " (Current week #: " + str(weekNumber) + ")")
+            st.info("__Highest price of each week__" + " (Current week #: " + str(weekNumber) + ")")
             highestDF = HighDF.groupby(['Year', 'Week']).agg({'High': 'max'})
             highest_value_list = highestDF['High'].values.tolist()
             out1 = HighDF[HighDF['High'].isin(highest_value_list)]
@@ -94,7 +98,7 @@ def run_potentialCoin():
 
         with col2:
             st.dataframe(LowDF)
-            st.info("Lowest price of each week")
+            st.info("__Lowest price of each week__")
             lowestDF = LowDF.groupby(['Year', 'Week']).agg({'Low': 'min'})
             lowest_value_list = lowestDF['Low'].values.tolist()
             out2 = LowDF[LowDF['Low'].isin(lowest_value_list)]
@@ -105,6 +109,7 @@ def run_potentialCoin():
     coinAvgCost = coinAvgPrice(coinOption[0])
     getHLAPrice(HighDF, LowDF, coinAvgCost)
     getOrderBookInfo(coinOption[0])
+    getCoinMarketCap(marketpairsList)
 
     if st.button('Analyze pairs for day trading'):
         dayTradingCoins()
@@ -146,10 +151,10 @@ def getHLAPrice(HighDF, LowDF, coinAvgCost):
     max_value = column.max()
     column = LowDF["Low"]
     min_value = column.min()
-    st.info("__Current Avg Price (5 mins):__" + " {:.4f}".format(float(coinAvgCost))+\
-             " / __Lowest Price:__" + " {:.4f}".format(float(min_value))+\
-             " / __Highest Price:__" + " {:.4f}".format(float(max_value))+\
-             " / __Max Earning Percentage:__" + " {:.2f}".format(float((1 - (float(min_value)/float(max_value)))*100)) +"%")
+    st.info("__Current Avg Price (5 mins):__" + " {:.3f}".format(float(coinAvgCost))+\
+             " / __Lowest Price:__" + " {:.3f}".format(float(min_value))+\
+             " / __Highest Price:__" + " {:.3f}".format(float(max_value))+\
+             " / __Max Earning Percentage:__ " + percentage(min_value, max_value))
 
 def dayTradingCoins():
     dataMarketPairs = GetMarketPairs()
@@ -167,7 +172,11 @@ def dayTradingCoins():
     st.dataframe(df)
 
 def percentage(part, whole):
-    percentage = 100 * (1-(float(part)/float(whole)))
+    try:
+        percentage = 100 * (1-(float(part)/float(whole)))
+    except ZeroDivisionError:
+        percentage = 0
+
     return str("{:.2f}".format(percentage)) + "%"
 
 def getOrderBookInfo(coinName):
@@ -183,6 +192,7 @@ def getOrderBookInfo(coinName):
         bidOrderBookDF = bidOrderBookDF.append(bidData, ignore_index=True)
 
     bidOrderBookDF['Total price'] = bidOrderBookDF['Bid'] * bidOrderBookDF['Qty']
+    bidOrderBookDF = bidOrderBookDF[(bidOrderBookDF['Total price'] >= 10000)]
 
     for i in range(0, len(json_data['asks'])):
         askPrice = float(json_data['asks'][i][0])
@@ -192,13 +202,16 @@ def getOrderBookInfo(coinName):
         askOrderBookDF = askOrderBookDF.append(askData, ignore_index=True)
 
     askOrderBookDF['Total price'] = askOrderBookDF['Ask'] * askOrderBookDF['Qty']
+    askOrderBookDF = askOrderBookDF[(askOrderBookDF['Total price'] >= 10000)]
 
     col1, col2 = st.beta_columns(2)
     with col1:
         st.info("__Support__ - " + getBestBidPriceQty(coinName))
+        bidOrderBookDF = bidOrderBookDF.reset_index(drop=True)
         st.dataframe(bidOrderBookDF.sort_values(by=['Bid'], ascending=False))
     with col2:
         st.info("__Resistance__ - " + getBestAskPriceQty(coinName))
+        askOrderBookDF = askOrderBookDF.reset_index(drop=True)
         st.dataframe(askOrderBookDF.sort_values(by=['Ask']))
 
 def getBestBidPriceQty(coinName):
@@ -218,6 +231,55 @@ def getBestAskPriceQty(coinName):
 
     askString = "Best Ask Price: " + str(askPrice) + " / Qty: " + str(askQty)
     return askString
+
+def changes24Hours(coinName):
+    result = requests.get('https://api1.binance.com/api/v3/ticker/24hr?symbol=' + str(coinName))
+    json_data = json.loads(result.text)
+    priceChange = json_data["priceChange"]
+    percentChange = json_data["priceChangePercent"]
+    lowPrice = json_data["lowPrice"]
+    highPrice = json_data["highPrice"]
+    weightedAvgPrice = json_data["weightedAvgPrice"]
+    volume = int((float(json_data["volume"])))
+
+    st.info("__24 hours change statistics__")
+    metric_row(
+        {
+            "Price Change": millify(priceChange, precision=2),
+            "Percent Change": millify(percentChange, precision=2),
+            "Low Price": millify(lowPrice, precision=2),
+            "High Price": millify(highPrice, precision=2),
+            "Average Price (24 hrs)": millify(weightedAvgPrice, precision=2),
+            "Volume (24 hrs)": millify(volume, precision=2)
+        }
+    )
+
+def getCoinMarketCap(marketpairsList):
+    st.markdown("""---""")
+    coin = st.multiselect("Select a coin", marketpairsList, key=1)
+    coinString = ''.join(coin)
+
+    df = pd.DataFrame()
+    result = requests.get('https://www.binance.com/exchange-api/v2/public/asset-service/product/get-products')
+    json_data = json.loads(result.text)
+    for i in range(0, len(json_data['data'])):
+        coinName = json_data['data'][i]['s']
+        circulatingSupply = json_data['data'][i]['cs']
+        currentAssetPrice = json_data['data'][i]['c']
+        volume = json_data['data'][i]['v']
+
+        coinInfo = {'Coin': coinName, 'Volume': volume, 'Circulating Supply': circulatingSupply, 'Current Price': currentAssetPrice}
+        df = df.append(coinInfo, ignore_index=True)
+
+    df['Market Cap'] = df['Circulating Supply'].astype(float).multiply(df['Current Price'].astype(float))
+    df['Percentage'] = (df['Volume'].astype(float) / df['Market Cap'].astype(float)) * 100
+    df.sort_values(by=['Percentage'], ascending=False, inplace=True)
+    df = df.reset_index(drop=True)
+    st.dataframe(df[['Coin', 'Percentage']])
+
+    filteredDF = df[df['Coin'].str.contains(coinString)]
+    st.dataframe(filteredDF)
+
 
 
 

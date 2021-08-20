@@ -3,6 +3,7 @@ cd C:\Users\bston\Desktop\Crypto_Analyzer
 streamlit run main.py
 streamlit run main.py --logger.level=debug
 
+pip install streamlit-metrics
 =======================================================
 View all DB
 sqlite3 data.db
@@ -37,6 +38,9 @@ Line chart
 https://plotly.com/python/reference/layout/yaxis/
 https://discuss.streamlit.io/t/how-to-build-line-chart-with-two-values-on-y-axis-and-sorded-x-axis-acording-string/9490/2
 https://altair-viz.github.io/
+
+API
+https://nomics.com/docs/#section/General
 =======================================================
 Store your credentials
 git config credential.helper store
