@@ -75,12 +75,13 @@ def run_potentialCoin():
         fig = px.line(closeDF, x="Open time", y="Close")
         fig.update_yaxes(autorange="reversed")
         fig.update_yaxes(categoryorder="category descending")
+        fig.update_layout(xaxis_title="")
         st.plotly_chart(fig, use_container_width=True)
 
         volumeDF = volumeDF[(volumeDF['Open time'] >= sDate) & (volumeDF['Open time'] <= eDate)]
         volumeDF['Open time'] = "(" + pd.to_datetime(volumeDF['Open time']).dt.strftime("%a") + ") " + volumeDF['Open time']
         chart = alt.Chart(volumeDF).mark_line().encode(
-            x=alt.X('Open time:N'),
+            x=alt.X('Open time:N', axis=alt.Axis(title='')),
             y=alt.Y('Volume:Q'),
             tooltip='Volume:N'
         ).properties()
@@ -109,10 +110,9 @@ def run_potentialCoin():
     coinAvgCost = coinAvgPrice(coinOption[0])
     getHLAPrice(HighDF, LowDF, coinAvgCost)
     getOrderBookInfo(coinOption[0])
-    getCoinMarketCap(marketpairsList)
-
-    if st.button('Analyze pairs for day trading'):
-        dayTradingCoins()
+    # getCoinMarketCap(marketpairsList)
+    # if st.button('Analyze earning % of pairs for day trading', key=1):
+    #    dayTradingCoins()
 
 def GetResultsJson(coinOption, intervalOption):
     # convert requests response to json
@@ -209,10 +209,19 @@ def getOrderBookInfo(coinName):
         st.info("__Support__ - " + getBestBidPriceQty(coinName))
         bidOrderBookDF = bidOrderBookDF.reset_index(drop=True)
         st.dataframe(bidOrderBookDF.sort_values(by=['Bid'], ascending=False))
+        totalBids = bidOrderBookDF['Total price'].sum()
     with col2:
         st.info("__Resistance__ - " + getBestAskPriceQty(coinName))
         askOrderBookDF = askOrderBookDF.reset_index(drop=True)
         st.dataframe(askOrderBookDF.sort_values(by=['Ask']))
+        totalAsks = askOrderBookDF['Total price'].sum()
+
+    metric_row(
+        {
+            "Total Bids": millify(totalBids, precision=2),
+            "Total Asks": millify(totalAsks, precision=2)
+        }
+    )
 
 def getBestBidPriceQty(coinName):
     result = requests.get('https://api1.binance.com/api/v3/ticker/bookTicker?symbol=' + str(coinName))
@@ -220,7 +229,7 @@ def getBestBidPriceQty(coinName):
     bidPrice = float(json_data['bidPrice'])
     bidQty = float(json_data['bidQty'])
 
-    bidString = "Best Bid Price: " + str(bidPrice) + " / Qty:" + str(bidQty)
+    bidString = "Best Bid Price: " + str(bidPrice) + " / Qty: " + str(bidQty)
     return bidString
 
 def getBestAskPriceQty(coinName):
@@ -246,11 +255,11 @@ def changes24Hours(coinName):
     metric_row(
         {
             "Price Change": millify(priceChange, precision=2),
-            "Percent Change": millify(percentChange, precision=2),
+            "Percent Change": millify(percentChange, precision=2) + "%",
             "Low Price": millify(lowPrice, precision=2),
             "High Price": millify(highPrice, precision=2),
             "Average Price (24 hrs)": millify(weightedAvgPrice, precision=2),
-            "Volume (24 hrs)": millify(volume, precision=2)
+            "Volume (24 hrs)": millify(volume, precision=0)
         }
     )
 
@@ -277,7 +286,7 @@ def getCoinMarketCap(marketpairsList):
     df = df.reset_index(drop=True)
     st.dataframe(df[['Coin', 'Percentage']])
 
-    filteredDF = df[df['Coin'].str.contains(coinString)]
+    filteredDF = df[(df['Coin'].str.contains(coinString))]
     st.dataframe(filteredDF)
 
 
