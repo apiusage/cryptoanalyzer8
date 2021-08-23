@@ -10,9 +10,10 @@ import plotly.express as px
 import altair as alt
 from millify import millify
 from streamlit_metrics import metric, metric_row
+from pandas import read_excel
 
 def run_potentialCoin():
-    st.header("Potential Coin")
+    st.header("__Potential Coin__")
     intervals = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M']
     columns = ["Open time", "Open", "High", "Low", "Close", "Volume", "Close time", "Quote asset volume",
                "Number of trades", "Taker buy base asset volume", "Taker buy quote asset volume", "Ignore"]
@@ -22,6 +23,9 @@ def run_potentialCoin():
     for i in range(0, len(dataMarketPairs['symbols'])):
         marketpairsList.append(dataMarketPairs['symbols'][i]['symbol'])
 
+    my_expander = st.beta_expander(label='Research Sites')
+    with my_expander:
+        displayDYORSites()
     coinOption = st.multiselect("Select a coin", marketpairsList)
     intervalOption = st.select_slider('Select a interval', options=intervals, value='15m')
 
@@ -193,6 +197,8 @@ def getOrderBookInfo(coinName):
 
     bidOrderBookDF['Total price'] = bidOrderBookDF['Bid'] * bidOrderBookDF['Qty']
     bidOrderBookDF = bidOrderBookDF[(bidOrderBookDF['Total price'] >= 10000)]
+    bidOrderBookDF['Qty'] = bidOrderBookDF['Qty'].round()
+    bidOrderBookDF['Total price'] = bidOrderBookDF['Total price'].round()
 
     for i in range(0, len(json_data['asks'])):
         askPrice = float(json_data['asks'][i][0])
@@ -203,6 +209,8 @@ def getOrderBookInfo(coinName):
 
     askOrderBookDF['Total price'] = askOrderBookDF['Ask'] * askOrderBookDF['Qty']
     askOrderBookDF = askOrderBookDF[(askOrderBookDF['Total price'] >= 10000)]
+    askOrderBookDF['Qty'] = askOrderBookDF['Qty'].round()
+    askOrderBookDF['Total price'] = askOrderBookDF['Total price'].round()
 
     col1, col2 = st.beta_columns(2)
     with col1:
@@ -288,6 +296,18 @@ def getCoinMarketCap(marketpairsList):
 
     filteredDF = df[(df['Coin'].str.contains(coinString))]
     st.dataframe(filteredDF)
+
+def displayDYORSites():
+    my_sheet = 'Sheet1'
+    file_name = 'DYOR Sites.xlsx'
+    df = read_excel(file_name, sheet_name=my_sheet, engine='openpyxl')
+    df.columns = df.columns.str.strip()
+    for index, row in df.iterrows():
+        link = row['URL']
+        name = row['Name']
+        url = name + ': {}'.format(link)
+        st.write(url)
+
 
 
 
