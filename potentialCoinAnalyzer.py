@@ -72,11 +72,11 @@ def run_potentialCoin():
 
         HighDF.set_index('Open time', inplace=True)
         LowDF.set_index('Open time', inplace=True)
+        tempCloseDF = tempCloseDF[(tempCloseDF['Open time'] >= sDate) & (tempCloseDF['Open time'] <= eDate)]
         tempCloseDF['Day'] = pd.to_datetime(tempCloseDF['Open time']).dt.strftime("%a")
         tempCloseDF.set_index('Open time', inplace=True)
         HighDF = filterDFDate(HighDF, sDate, eDate)
         LowDF = filterDFDate(LowDF, sDate, eDate)
-        tempCloseDF = filterDFDate(tempCloseDF, sDate, eDate)
         weekNumber = date.today().isocalendar()[1]
 
         changes24Hours(coinOption[0])
