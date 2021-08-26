@@ -64,13 +64,19 @@ def run_potentialCoin():
             closeData = {'Open time': date_time, 'Close': close}
             closeDF = closeDF.append(closeData, ignore_index=True)
 
+            tempCloseData = {'Open time': date_time, 'Close': close}
+            tempCloseDF = closeDF.append(tempCloseData, ignore_index=True)
+
             volumeData = {'Open time': date_time, 'Volume': volume}
             volumeDF = volumeDF.append(volumeData, ignore_index=True)
 
         HighDF.set_index('Open time', inplace=True)
         LowDF.set_index('Open time', inplace=True)
+        tempCloseDF['Day'] = pd.to_datetime(tempCloseDF['Open time']).dt.strftime("%a")
+        tempCloseDF.set_index('Open time', inplace=True)
         HighDF = filterDFDate(HighDF, sDate, eDate)
         LowDF = filterDFDate(LowDF, sDate, eDate)
+        tempCloseDF = filterDFDate(tempCloseDF, sDate, eDate)
         weekNumber = date.today().isocalendar()[1]
 
         changes24Hours(coinOption[0])
@@ -92,7 +98,7 @@ def run_potentialCoin():
         st.altair_chart(chart, use_container_width=True)
 
         with col1:
-            st.dataframe(HighDF)
+            st.dataframe(tempCloseDF)
             st.info("__Highest price of each week__" + " (Current week #: " + str(weekNumber) + ")")
             highestDF = HighDF.groupby(['Year', 'Week']).agg({'High': 'max'})
             highest_value_list = highestDF['High'].values.tolist()
@@ -102,7 +108,7 @@ def run_potentialCoin():
             st.dataframe(df.sort_index(ascending=False))
 
         with col2:
-            st.dataframe(LowDF)
+            st.dataframe(tempCloseDF)
             st.info("__Lowest price of each week__")
             lowestDF = LowDF.groupby(['Year', 'Week']).agg({'Low': 'min'})
             lowest_value_list = lowestDF['Low'].values.tolist()

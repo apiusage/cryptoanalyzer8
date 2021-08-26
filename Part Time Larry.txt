@@ -3,3 +3,6 @@ https://www.youtube.com/channel/UCY2ifv8iH1Dsgjrz-h3lWLQ
 
 Finding Breakout Candidates with Python and Pandas
 https://www.youtube.com/watch?v=exGuyBnhN_8
+
+Create Reddit bots with Python: Beginner to Advanced
+https://www.udemy.com/course/create-reddit-bots-with-python-beginner-to-advanced/?couponCode=BB274C0D16FAC3EC17F0
