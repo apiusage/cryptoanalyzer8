@@ -3,6 +3,7 @@ import streamlit.components.v1 as stc
 from db import * 
 from portfolio import *
 from marginLevel import *
+from measureProfit import *
 from potentialCoinAnalyzer import *
 from PIL import Image
 
@@ -27,62 +28,33 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 def main():
     try:
         stc.html(LOGO_BANNER)
-        menu = ["Home", "Potential Coin", "Margin Level", "Portfolio", "About"]
+        menu = ["Home", "Measure Profit", "Margin Level", "Portfolio", "About"]
         choice = st.sidebar.selectbox("Menu", menu)
 
         create_table()
 
+        if choice == "Home":
+            run_potentialCoin()
+
         if choice == "Margin Level":
             run_marginLevel()
 
-        elif choice == "Potential Coin":
-            run_potentialCoin()
+        elif choice == "Measure Profit":
+            run_measureProfit()
 
-        elif choice == "Portfolio":   
-            run_portfolio() 
+        elif choice == "Portfolio":
+            run_portfolio()
 
         elif choice == "About":
             st.header("About")
             st.write("Crypto Analyzer")
             st.balloons()
-        else:
-            st.header("Measure Profit")
-            capital = st.number_input("Capital: ", 0.0, value=0.0, key=0)
-            fPrice = st.number_input("Buy Price: ", 0.0, value=0.0, key=1)
-            sPrice = st.number_input("Target Price: ", 0.0, value=0.0, key=2)
-
-            c1, c2 = st.beta_columns([1, 1])
-            SLPercent = [1.5, 2]
-            with c1:
-                st.success("Stop loss (Short)")
-                for x in SLPercent:
-                    value = x / 100 * capital
-                    SLPrice = fPrice * x / 100
-                    st.write(str(x) + "% = $" + str("{:.3f}".format(fPrice + SLPrice)) + " (Risk: $" + str(
-                        "{:.2f}".format(value)) + ")")
-
-            with c2:
-                st.success("Stop loss (Long)")
-                for x in SLPercent:
-                    value = x / 100 * capital
-                    SLPrice = fPrice * x / 100
-                    st.write(str(x) + "% = $" + str("{:.3f}".format(fPrice - SLPrice)) + " (Risk: $" + str(
-                        "{:.2f}".format(value)) + ")")
-
-            quotient = fPrice / sPrice
-            percentage = (1 - quotient) * 100
-            profit = (percentage / 100) * capital
-            st.info("__Rewards__")
-            fees = profit * 0.001
-            totalprofit = profit - fees
-
-            st.write("__Reward Percentage__: " + str("{:.2f}".format(percentage)) + "%")
-            st.write("__Profit / Loss__: $" + str("{:.2f}".format(profit)))
-            st.write("__Less Fees (0.1%)__: $" + str("{:.2f}".format(fees)))
-            st.write("__Total Profit__: $" + str("{:.2f}".format(totalprofit)))
 
     except:
-           pass
+        pass
 
 if __name__ == '__main__':
     main()
+
+
+

@@ -1,0 +1,6 @@
+Add 2 more tables
+- Close price
+
+Remove
+- Volume 
+- Order book
