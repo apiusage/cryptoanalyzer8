@@ -88,7 +88,9 @@ def GetMarketPairs():
         return json_data
 
 def displayLineChart(closeDF):
-    fig = px.line(closeDF, x="Open time", y="Close")
+    copiedDF = closeDF.copy()
+    copiedDF['Open time'] = " (" + pd.to_datetime(copiedDF['Open time']).dt.strftime("%a") + ") " + copiedDF['Open time']
+    fig = px.line(copiedDF, x='Open time', y='Close')
     fig.update_yaxes(autorange="reversed")
     fig.update_yaxes(categoryorder="category descending")
     fig.update_layout(xaxis_title="")
