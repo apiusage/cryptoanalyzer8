@@ -74,7 +74,7 @@ def run_potentialCoin():
 def GetResultsJson(coinOption, intervalOption):
     result = requests.get(
         'https://api1.binance.com/api/v3/klines?symbol=' + str(coinOption[0]) + '&interval=' + str(
-            intervalOption) + '&limit=2000')
+            intervalOption) + '&limit=1000')
     if result.ok:
         json_data = json.loads(result.text)
         return json_data
@@ -90,9 +90,8 @@ def GetMarketPairs():
 def displayLineChart(closeDF):
     copiedDF = closeDF.copy()
     copiedDF['Open time'] = " (" + pd.to_datetime(copiedDF['Open time']).dt.strftime("%a") + ") " + copiedDF['Open time']
+    copiedDF['Close'] = copiedDF['Close'].astype('float')
     fig = px.line(copiedDF, x='Open time', y='Close')
-    fig.update_yaxes(autorange="reversed")
-    fig.update_yaxes(categoryorder="category descending")
     fig.update_layout(xaxis_title="")
     st.plotly_chart(fig, use_container_width=True)
 

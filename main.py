@@ -26,7 +26,7 @@ hide_streamlit_style = """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 def main():
-    try:
+    #try:
         stc.html(LOGO_BANNER)
         menu = ["Home", "Measure Profit", "Margin Level", "Portfolio", "About"]
         choice = st.sidebar.selectbox("Menu", menu)
@@ -50,8 +50,8 @@ def main():
             st.write("Crypto Analyzer")
             st.balloons()
 
-    except:
-        pass
+    #except:
+    #    pass
 
 if __name__ == '__main__':
     main()
