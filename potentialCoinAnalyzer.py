@@ -28,6 +28,7 @@ def run_potentialCoin():
     col1, col2 = st.beta_columns(2)
     if coinOption:
         closeDF = pd.DataFrame()
+        volumeDF = pd.DataFrame()
         dataJson = GetResultsJson(coinOption, intervalOption)
         for i in range(0, len(dataJson)):
             # UTC time to local time
@@ -36,11 +37,14 @@ def run_potentialCoin():
             date_time = date_time.strftime("%Y/%m/%d, %H:%M:%S")
 
             close = "{:.4f}".format(float(dataJson[i][4]))
-            closeData = {'Open time': date_time, 'Close': close}
+            volume = "{:.1f}".format(float(dataJson[i][5]))
+
+            closeData = {'Open time': date_time, 'Close': close, 'Volume': volume}
             closeDF = closeDF.append(closeData, ignore_index=True)
 
         closeDF = closeDF[(closeDF['Open time'] >= sDate) & (closeDF['Open time'] <= eDate)]
         displayLineChart(closeDF)
+        displayVolumeChart(closeDF)
         closeDF['Day'] = pd.to_datetime(closeDF['Open time']).dt.strftime("%a")
         closeDF.set_index('Open time', inplace=True)
 
@@ -95,6 +99,14 @@ def displayLineChart(closeDF):
     fig.update_layout(xaxis_title="")
     st.plotly_chart(fig, use_container_width=True)
 
+def displayVolumeChart(closeDF):
+    closeDF = closeDF.copy()
+    closeDF['Open time'] = " (" + pd.to_datetime(closeDF['Open time']).dt.strftime("%a") + ") " + closeDF['Open time']
+    closeDF['Volume'] = closeDF['Volume'].astype('float')
+    fig = px.line(closeDF, x='Open time', y='Volume')
+    fig.update_layout(xaxis_title="")
+    st.plotly_chart(fig, use_container_width=True)
+
 def displayDYORSites():
     my_sheet = 'Sheet1'
     file_name = 'DYOR Sites.xlsx'
@@ -105,6 +117,10 @@ def displayDYORSites():
         name = row['Name']
         url = name + ': {}'.format(link)
         st.write(url)
+
+
+
+
 
 
 
