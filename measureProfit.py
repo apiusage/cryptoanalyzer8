@@ -6,7 +6,7 @@ def run_measureProfit():
     fPrice = st.number_input("Buy Price: ", 0.0, value=0.0, key=1)
     sPrice = st.number_input("Target Price: ", 0.0, value=0.0, key=2)
 
-    c1, c2 = st.beta_columns([1, 1])
+    c1, c2 = st.columns([1, 1])
     SLPercent = [1.5, 2]
     with c1:
         st.success("Stop loss (Short)")
@@ -35,3 +35,6 @@ def run_measureProfit():
     st.write("__Profit / Loss__: $" + str("{:.2f}".format(profit)))
     st.write("__Less Fees (0.1%)__: $" + str("{:.2f}".format(fees)))
     st.write("__Total Profit__: $" + str("{:.2f}".format(totalprofit)))
+
+    leverageSize = st.slider('Leverage Size', 1, 125, 50)
+    st.write("__Total Profit__: $" + str("{:.2f}".format(totalprofit * leverageSize)))

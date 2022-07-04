@@ -18,7 +18,7 @@ def viewAnalysis():
     try:
         result = view_all_data()
         df = pd.DataFrame(result)
-        c1, c2 = st.beta_columns([1,3])
+        c1, c2 = st.columns([1,3])
         with c1:
             list_of_coin = [i[2] for i in view_all_data()]
             selected_coin = st.selectbox("Select Coin: ", list_of_coin)
@@ -62,7 +62,7 @@ def viewAnalysis():
         pass
 
 def buy_coin(): 
-    with st.beta_expander("Buy Coin"):
+    with st.expander("Buy Coin"):
         coinListDF = pd.read_excel('data/Coin List.xlsx', engine='openpyxl')  
         coinListDF = coinListDF['Coins List'].values.tolist()
 
@@ -90,7 +90,7 @@ def sell_coin():
     coinListDF = pd.read_excel('data/Coin List.xlsx', engine='openpyxl')  
     coinListDF = coinListDF['Coins List'].values.tolist()
 
-    with st.beta_expander("Sell Coins"):
+    with st.expander("Sell Coins"):
         list_of_coins = [i[2] for i in view_all_data()]
         selected_coin = st.selectbox("Choose a coin to update: ", list_of_coins)
         coin_result = get_coin_by_name(selected_coin)
@@ -107,7 +107,7 @@ def sell_coin():
             st.success("Updated {}".format(selected_coin))
 
 def delete_coin():
-    with st.beta_expander("Delete Coin"):
+    with st.expander("Delete Coin"):
         result = view_all_data()
         df = pd.DataFrame(result)
         st.dataframe(df)

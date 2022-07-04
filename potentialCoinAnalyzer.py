@@ -25,7 +25,7 @@ def run_potentialCoin():
     sDate = startEndDate[0].strftime("%Y/%m/%d, %H:%M:%S")
     eDate = (startEndDate[1] + timedelta(days=1)).strftime("%Y/%m/%d, %H:%M:%S")
 
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
     if coinOption:
         closeDF = pd.DataFrame()
         volumeDF = pd.DataFrame()
@@ -71,7 +71,7 @@ def run_potentialCoin():
             df = df.drop_duplicates(subset=['Week'], keep='first')
             st.dataframe(df.sort_index(ascending=False))
 
-        my_expander = st.beta_expander(label='Research Sites')
+        my_expander = st.expander(label='Research Sites')
         with my_expander:
             displayDYORSites()
 

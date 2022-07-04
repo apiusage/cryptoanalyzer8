@@ -1,3 +1,5 @@
+Kucoin API: https://docs.kucoin.com/
+
 cd C:\Users\bston\Desktop\Crypto_Analyzer
 
 streamlit run main.py
@@ -21,7 +23,7 @@ git add .
 git status
 git commit -m "Updates"
 git remote add origin https://github.com/apiusage/Crypto_Analyzer.git
-git remote set-url origin https://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@github.com/apiusage/Crypto_Analyzer.git
+git remote set-url origin https://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@github.com/apiusage/Crypto_Analyzer.git
 git push -u origin master
 
 https://share.streamlit.io/

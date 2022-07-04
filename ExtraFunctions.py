@@ -91,7 +91,7 @@ def getOrderBookInfo(coinName):
     askOrderBookDF['Qty'] = askOrderBookDF['Qty'].round()
     askOrderBookDF['Total price'] = askOrderBookDF['Total price'].round()
 
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
     with col1:
         st.info("__Support__ - " + getBestBidPriceQty(coinName))
         bidOrderBookDF = bidOrderBookDF.reset_index(drop=True)

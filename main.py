@@ -26,9 +26,9 @@ hide_streamlit_style = """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 def main():
-    try:
+    # try:
         stc.html(LOGO_BANNER)
-        menu = ["Home", "Measure Profit", "Margin Level", "Portfolio", "About"]
+        menu = ["Home", "Measure Profit", "Margin Level", "Trading View", "Portfolio", "About"]
         choice = st.sidebar.selectbox("Menu", menu)
 
         create_table()
@@ -38,6 +38,9 @@ def main():
 
         if choice == "Margin Level":
             run_marginLevel()
+
+        elif choice == "Trading View":
+            run_tradingView()
 
         elif choice == "Measure Profit":
             run_measureProfit()
@@ -50,8 +53,8 @@ def main():
             st.write("Crypto Analyzer")
             st.balloons()
 
-    except:
-        pass
+    #except:
+     #   pass
 
 if __name__ == '__main__':
     main()

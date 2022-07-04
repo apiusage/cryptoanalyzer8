@@ -1,0 +1,2 @@
+Binance API Tutorial (Part 8) - Real-Time Candlestick Charts using Websockets and JavaScript
+https://www.youtube.com/watch?v=EeT3Ore4Sao

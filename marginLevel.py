@@ -3,7 +3,7 @@ import streamlit as st
 def run_marginLevel():
     st.header("Margin Level")
 
-    c1, c2 = st.beta_columns([1, 1])
+    c1, c2 = st.columns([1, 1])
     with c1:
         pricePerCoin = st.number_input("Coin Price: ", 0.0, value=0.0, key=3)
     with c2:
@@ -15,7 +15,7 @@ def run_marginLevel():
     st.success("Margin Level = Total Asset Value / (Total Borrowed + Total Accrued Interest)")
     totalAssetValue = st.number_input("Total Asset: ", 0.0, value=0.0, key=0)
 
-    c3, c4 = st.beta_columns([1, 1])
+    c3, c4 = st.columns([1, 1])
     with c3:
         totalBorrowed = st.number_input("Total Borrowed: ", 0.0, value=0.0, key=1)
     with c4:
