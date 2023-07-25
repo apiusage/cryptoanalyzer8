@@ -12,9 +12,7 @@ def run_potentialCoin():
     intervals = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M']
 
     marketpairsList, dataMarketPairs = [], None
-    while dataMarketPairs is None:
-        dataMarketPairs = GetMarketPairs()
-
+    dataMarketPairs = GetMarketPairs()
     for i in range(0, len(dataMarketPairs['symbols'])):
         marketpairsList.append(dataMarketPairs['symbols'][i]['symbol'])
     coinOption = st.multiselect("Select a coin", marketpairsList)
@@ -82,9 +80,11 @@ def GetResultsJson(coinOption, intervalOption):
         'https://api1.binance.com/api/v3/klines?symbol=' + str(coinOption[0]) + '&interval=' + str(
             intervalOption) + '&limit=1000')
     if result.ok:
+	st.info("Retrieved Coins Info Successfully")
         json_data = json.loads(result.text)
         return json_data
     else:
+	st.info("Retrieved Coins Info Failed")
         GetResultsJson(coinOption)
 
 def GetMarketPairs():
